@@ -7,7 +7,9 @@ authors = [
     { name = "Bilnaa", email = "noufele.mehdi@hotmail.fr" }
 ]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "pytest>=9.2.0",
+]
 
 [project.scripts]
 langage-design = "langage_design:main"
@@ -18,5 +20,10 @@ build-backend = "uv_build"
 
 [tool.uv.workspace]
 members = [
-    "src/langage_design/calc-pn",
+    "src/calc-pn",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
 ]
