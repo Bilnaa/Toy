@@ -1,9 +1,11 @@
+from typing import Callable
+
 from toy.ast_nodes import Expression, Literal, Binary
 from toy.tokens import Token, TokenType
 
 
 class Parser:
-    def __init__(self,tokens: list[Token]):
+    def __init__(self, tokens: list[Token]):
         self.tokens = tokens
         self.current = 0
 
@@ -11,7 +13,7 @@ class Parser:
         statements = []
         while not self.is_at_end():
             statements.append(self.parse_expression())
-            
+
         return statements
 
     #############################
@@ -19,22 +21,14 @@ class Parser:
     #############################
 
     def parse_expression(self) -> Expression:
-        """will try to parse an addition or subtraction"""
-        left = self.parse_factor()
-        while self.match(TokenType.PLUS,TokenType.MINUS):
-            operator = self.previous()
-            right = self.parse_factor()
-            left = Binary(left, operator, right)
-        return left
+        return self.parse_term()
+
+    def parse_term(self) -> Expression:
+        return self.binary_left(self.parse_factor, [TokenType.PLUS, TokenType.MINUS])
 
     def parse_factor(self) -> Expression:
-        """will try to parse a multiplication or division"""
-        left = self.parse_primary()
-        while self.match(TokenType.STAR, TokenType.SLASH):
-            operator = self.previous()
-            right = self.parse_primary()
-            left = Binary(left, operator, right)
-        return left
+        return self.binary_left(self.parse_primary, [TokenType.STAR, TokenType.SLASH])
+
 
     def parse_primary(self) -> Expression:
         """primary is something that we can't decompose no more like: 3, 'bob'"""
@@ -47,18 +41,25 @@ class Parser:
     #############################
     # Utils
     #############################
+    def binary_left(self, operand_fn: Callable[[], Expression], operators: list[TokenType]) -> Expression:
+        left = operand_fn()
+        while self.match(*operators):
+            operator = self.previous()
+            right = operand_fn()
+            left = Binary(left, operator, right)
+        return left
 
     def previous(self):
         return self.tokens[self.current - 1]
 
-    def match(self, *types:TokenType) -> bool:
+    def match(self, *types: TokenType) -> bool:
         for token_type in types:
             if self.check(token_type):
                 self.advance()
                 return True
         return False
 
-    def check(self,token_type:TokenType) -> bool:
+    def check(self, token_type: TokenType) -> bool:
         """Check if the current token type matches the token type"""
         if self.is_at_end():
             return False
@@ -70,10 +71,8 @@ class Parser:
             self.current += 1
         return self.previous()
 
-
     def is_at_end(self) -> bool:
         return self.peek().type == TokenType.EOF
 
     def peek(self):
         return self.tokens[self.current]
-
