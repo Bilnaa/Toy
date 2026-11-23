@@ -20,8 +20,17 @@ class Parser:
 
     def parse_expression(self) -> Expression:
         """will try to parse an addition or subtraction"""
-        left = self.parse_primary()
+        left = self.parse_factor()
         while self.match(TokenType.PLUS,TokenType.MINUS):
+            operator = self.previous()
+            right = self.parse_factor()
+            left = Binary(left, operator, right)
+        return left
+
+    def parse_factor(self) -> Expression:
+        """will try to parse a multiplication or division"""
+        left = self.parse_primary()
+        while self.match(TokenType.STAR, TokenType.SLASH):
             operator = self.previous()
             right = self.parse_primary()
             left = Binary(left, operator, right)
