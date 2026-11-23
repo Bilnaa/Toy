@@ -20,7 +20,7 @@ build-backend = "uv_build"
 
 [tool.uv.workspace]
 members = [
-    "src/calc-pn",
+    "src/calc",
 ]
 
 [dependency-groups]

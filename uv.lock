@@ -11,7 +11,7 @@ members = [
 [[package]]
 name = "calc-pn"
 version = "0.1.0"
-source = { editable = "src/calc-pn" }
+source = { editable = "src/calc" }
 
 [[package]]
 name = "colorama"
