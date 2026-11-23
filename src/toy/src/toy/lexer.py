@@ -37,6 +37,10 @@ class Lexer:
                 self.add_token(TokenType.SEMICOLON)
             case ",":
                 self.add_token(TokenType.COMMA)
+            case " " | "\t" | "\r":
+                pass
+            case "\n":
+                self.line += 1
             case _:
                 if c.isdigit():
                     self.number()
@@ -50,7 +54,7 @@ class Lexer:
 
     def advance(self) -> str:
         self.current += 1
-        return self.current[self.current - 1]
+        return self.source[self.current - 1]
 
     def is_at_end(self) -> bool:
         return self.current >= len(self.source)
@@ -63,7 +67,7 @@ class Lexer:
         # we parse the decimal part (93)
         if self.peek() == '.' and self.peek_next().isdigit():
             self.advance()
-            while self.peek_next().isdigit():
+            while self.peek().isdigit():
                 self.advance()
 
         self.add_token(TokenType.NUMBER)
