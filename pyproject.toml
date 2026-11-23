@@ -21,6 +21,7 @@ build-backend = "uv_build"
 [tool.uv.workspace]
 members = [
     "src/calc",
+    "src/toy",
 ]
 
 [dependency-groups]

@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/calc-pn.iml" filepath="$PROJECT_DIR$/.idea/calc-pn.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/langage-design.iml" filepath="$PROJECT_DIR$/.idea/langage-design.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/toy.iml" filepath="$PROJECT_DIR$/.idea/toy.iml" />
     </modules>
   </component>
 </project>
