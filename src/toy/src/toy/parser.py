@@ -29,11 +29,15 @@ class Parser:
     def parse_factor(self) -> Expression:
         return self.binary_left(self.parse_primary, [TokenType.STAR, TokenType.SLASH])
 
-
     def parse_primary(self) -> Expression:
         """primary is something that we can't decompose no more like: 3, 'bob'"""
         if self.match(TokenType.NUMBER):
             return Literal(float(self.previous().lexeme))
+
+        if self.match(TokenType.LPAREN):
+            expr = self.parse_expression()
+            self.consume(TokenType.RPAREN, "Expected ')' after expression.")
+            return expr
 
         next_token = self.peek()
         raise SyntaxError(f"Unexpected token, token :{self.peek().lexeme}, line: {next_token.line}")
@@ -51,6 +55,13 @@ class Parser:
 
     def previous(self):
         return self.tokens[self.current - 1]
+
+    def consume(self, token_type: TokenType, message: str) -> Token:
+        if self.check(token_type):
+            return self.advance()
+
+        next_token = self.peek()
+        raise SyntaxError(f"{message} Got token: '{next_token.lexeme}', line: {next_token.line}")
 
     def match(self, *types: TokenType) -> bool:
         for token_type in types:

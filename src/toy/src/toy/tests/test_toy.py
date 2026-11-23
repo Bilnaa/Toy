@@ -1,3 +1,5 @@
+import pytest
+
 from toy.ast_nodes import *
 from toy.lexer import Lexer
 from toy.parser import Parser
@@ -64,3 +66,70 @@ def test_parse_factor():
             ),
         ),
     ]
+
+def test_parse_factor_with_parenthesis():
+    source = "(3 + 2) * 4"
+    lexer = Lexer(source)
+
+    tokens = lexer.tokenize()
+    parser = Parser(tokens)
+    ast = parser.parse()
+
+    assert ast == [
+        Binary(
+            Binary(
+                Literal(3.0),
+                Token(TokenType.PLUS, "+", 1),
+                Literal(2.0),
+            ),
+            Token(TokenType.STAR, "*", 1),
+            Literal(4.0),
+        )
+    ]
+
+
+def test_parse_nested_and_multiple_parentheses():
+    source = "((3 + 2)) * (4 - 1)"
+    lexer = Lexer(source)
+
+    tokens = lexer.tokenize()
+    parser = Parser(tokens)
+    ast = parser.parse()
+
+    assert ast == [
+        Binary(
+            Binary(
+                Literal(3.0),
+                Token(TokenType.PLUS, "+", 1),
+                Literal(2.0),
+            ),
+            Token(TokenType.STAR, "*", 1),
+            Binary(
+                Literal(4.0),
+                Token(TokenType.MINUS, "-", 1),
+                Literal(1.0),
+            ),
+        )
+    ]
+
+
+def test_parse_unclosed_parenthesis():
+    source = "(3 + 2"
+    lexer = Lexer(source)
+
+    tokens = lexer.tokenize()
+    parser = Parser(tokens)
+
+    with pytest.raises(SyntaxError):
+        parser.parse()
+
+
+def test_parse_empty_parentheses():
+    source = "()"
+    lexer = Lexer(source)
+
+    tokens = lexer.tokenize()
+    parser = Parser(tokens)
+
+    with pytest.raises(SyntaxError):
+        parser.parse()
