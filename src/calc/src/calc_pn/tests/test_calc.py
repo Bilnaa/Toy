@@ -25,3 +25,14 @@ def test_calculate_empty_raises_exception():
 def test_calculate_simple_addition():
     source = "+ 1 2"
     assert calculate(source) == 3
+
+
+def test_calculate_div_by_zero():
+    source = "/ 1 0"
+    with pytest.raises(ValueError):
+        calculate(source)
+
+
+def test_calculate_sequence_of_operations():
+    source = "* 2 / 10 5"  # (10 / 5) * 2
+    assert calculate(source) == 4

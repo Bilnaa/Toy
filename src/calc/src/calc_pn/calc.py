@@ -76,6 +76,9 @@ def evaluate(tokens: list[Token], index: int = 0) -> EvalResult:
                 value=left_result.value * right_result.value,
                 index=next_index)
         case TokenType.DIV:
+            # if we div by 0, it's impossible so we don't even bother lol
+            if right_result.value == 0:
+                raise ValueError(f"Division by zero is not possible, Operands are {left_result.value} and {right_result.value}")
             return EvalResult(
                 value=left_result.value / right_result.value,
                 index=next_index)
@@ -86,14 +89,13 @@ def evaluate(tokens: list[Token], index: int = 0) -> EvalResult:
 def calculate(source: str) -> int | float:
     tokens = tokenize(source)
     if not tokens:
-        raise ValueError(f"No tokens in {source}")
+        raise ValueError(f"No tokens were found")
     result = evaluate(tokens)
     return result.value
 
 
 def main():
-    print("Calc")
-
+    pass
 
 if __name__ == "__main__":
     main()
