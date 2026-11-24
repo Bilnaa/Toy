@@ -165,6 +165,7 @@ def evaluate(source: str):
         ("3 + 2 > 4", True),  # Comparison: 5 > 4
         ("3 + 2 == 5", True),  # Equality: 5 == 5
         ("3 + 2 == 4", False),  # Equality: 5 == 4
+        ("!(3 > 2)",False),
     ],
 )
 def test_evaluate_expressions(source, expected):

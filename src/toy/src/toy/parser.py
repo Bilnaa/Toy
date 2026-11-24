@@ -1,6 +1,6 @@
 from typing import Callable
 
-from toy.ast_nodes import Expression, Literal, Binary
+from toy.ast_nodes import Expression, Literal, Binary, Unary
 from toy.tokens import Token, TokenType
 
 
@@ -33,7 +33,14 @@ class Parser:
         return self.binary_left(self.parse_factor, [TokenType.PLUS, TokenType.MINUS])
 
     def parse_factor(self) -> Expression:
-        return self.binary_left(self.parse_primary, [TokenType.STAR, TokenType.SLASH])
+        return self.binary_left(self.parse_unary, [TokenType.STAR, TokenType.SLASH])
+
+    def parse_unary(self) -> Expression:
+        if self.match(TokenType.BANG, TokenType.MINUS):
+            operator = self.previous()
+            right = self.parse_unary()
+            return Unary(operator, right)
+        return self.parse_primary()
 
     def parse_primary(self) -> Expression:
         """primary is something that we can't decompose no more like: 3, 'bob'"""

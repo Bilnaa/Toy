@@ -19,3 +19,9 @@ class Binary(Expression):
     left: Expression
     operator: Token
     right: Expression
+
+@dataclass
+class Unary(Expression):
+    # A unary is just an operator prefixed by an operator on the right
+    operator: Token
+    right: Expression

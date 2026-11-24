@@ -1,6 +1,6 @@
 from typing import Any
 
-from toy.ast_nodes import Expression, Literal, Binary
+from toy.ast_nodes import Expression, Literal, Binary, Unary
 from toy.tokens import TokenType
 
 
@@ -37,6 +37,15 @@ class Interpreter:
                         return left_value == right_value
                     case TokenType.BANG_EQUAL:
                         return left_value != right_value
+                    case _:
+                        raise ValueError(f"Unknown operator: {operator}")
+            case Unary(operator, right):
+                right_value = self.evaluate(right)
+                match operator.type:
+                    case TokenType.MINUS:
+                        return -right_value
+                    case TokenType.BANG:
+                        return not right_value
                     case _:
                         raise ValueError(f"Unknown operator: {operator}")
             case _:
