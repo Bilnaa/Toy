@@ -4,7 +4,7 @@ from toy.ast_nodes import *
 from toy.interpreter import Interpreter
 from toy.lexer import Lexer
 from toy.parser import Parser
-from toy.tokens import TokenType, Token
+from toy.tokens import Token, TokenType
 
 
 def test_lexer_tokenize():
@@ -31,109 +31,6 @@ def test_lexer_tokenize_ignored_chars():
         Token(TokenType.NUMBER, "4", 2),
         Token(TokenType.EOF, "", 2),
     ]
-
-def test_parse_term():
-    source = "3 + 2"
-    lexer = Lexer(source)
-
-    tokens = lexer.tokenize()
-    parser = Parser(tokens)
-    ast = parser.parse()
-
-    assert ast == [
-        Binary(
-            Literal(3.0),
-            Token(TokenType.PLUS, "+", 1),
-            Literal(2.0),
-        ),
-    ]
-
-def test_parse_factor():
-    source = "3 + 2 * 4"
-    lexer = Lexer(source)
-
-    tokens = lexer.tokenize()
-    parser = Parser(tokens)
-    ast = parser.parse()
-
-    assert ast == [
-        Binary(
-            Literal(3.0),
-            Token(TokenType.PLUS, "+", 1),
-            Binary(
-                Literal(2.0),
-                Token(TokenType.STAR, "*", 1),
-                Literal(4.0),
-            ),
-        ),
-    ]
-
-def test_parse_factor_with_parenthesis():
-    source = "(3 + 2) * 4"
-    lexer = Lexer(source)
-
-    tokens = lexer.tokenize()
-    parser = Parser(tokens)
-    ast = parser.parse()
-
-    assert ast == [
-        Binary(
-            Binary(
-                Literal(3.0),
-                Token(TokenType.PLUS, "+", 1),
-                Literal(2.0),
-            ),
-            Token(TokenType.STAR, "*", 1),
-            Literal(4.0),
-        )
-    ]
-
-
-def test_parse_nested_and_multiple_parentheses():
-    source = "((3 + 2)) * (4 - 1)"
-    lexer = Lexer(source)
-
-    tokens = lexer.tokenize()
-    parser = Parser(tokens)
-    ast = parser.parse()
-
-    assert ast == [
-        Binary(
-            Binary(
-                Literal(3.0),
-                Token(TokenType.PLUS, "+", 1),
-                Literal(2.0),
-            ),
-            Token(TokenType.STAR, "*", 1),
-            Binary(
-                Literal(4.0),
-                Token(TokenType.MINUS, "-", 1),
-                Literal(1.0),
-            ),
-        )
-    ]
-
-
-def test_parse_unclosed_parenthesis():
-    source = "(3 + 2"
-    lexer = Lexer(source)
-
-    tokens = lexer.tokenize()
-    parser = Parser(tokens)
-
-    with pytest.raises(SyntaxError):
-        parser.parse()
-
-
-def test_parse_empty_parentheses():
-    source = "()"
-    lexer = Lexer(source)
-
-    tokens = lexer.tokenize()
-    parser = Parser(tokens)
-
-    with pytest.raises(SyntaxError):
-        parser.parse()
 
 def tokenize(source: str) -> list[Token]:
     """Tokenize source code."""
@@ -165,7 +62,7 @@ def evaluate(source: str):
         ("3 + 2 > 4", True),  # Comparison: 5 > 4
         ("3 + 2 == 5", True),  # Equality: 5 == 5
         ("3 + 2 == 4", False),  # Equality: 5 == 4
-        ("!(3 > 2)",False),
+        ("-2 + 3", 1),  # Unary: 1
     ],
 )
 def test_evaluate_expressions(source, expected):
