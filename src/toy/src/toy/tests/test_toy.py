@@ -170,3 +170,12 @@ def evaluate(source: str):
 )
 def test_evaluate_expressions(source, expected):
     assert evaluate(source) == expected
+
+def test_parse_var_declaration():
+    ast = parse("var a = 1;")
+    assert ast == [
+        VarStatement(
+            Token(TokenType.IDENTIFIER, "a", 1),
+            Literal(1.0),
+        )
+    ]

@@ -25,3 +25,20 @@ class Unary(Expression):
     # A unary is just an operator prefixed by an operator on the right
     operator: Token
     right: Expression
+#####################
+# Statements
+#####################
+
+@dataclass
+class Statement:
+    # a statement modifies the state or the behavior of a program
+    pass
+
+@dataclass
+class ExpressionStatement(Statement):
+    expression: Expression
+
+@dataclass
+class VarStatement(Statement):
+    name: Token
+    initializer: Expression | None

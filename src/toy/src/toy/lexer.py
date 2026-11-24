@@ -1,4 +1,4 @@
-from toy.tokens import Token, TokenType
+from toy.tokens import Token, TokenType, KEYWORDS
 
 
 class Lexer:
@@ -68,6 +68,8 @@ class Lexer:
             case _:
                 if c.isdigit():
                     self.number()
+                elif c.isalpha():
+                    self.identifier()
                 else:
                     raise SyntaxError(f'Unexpected character "{c}",line {self.line}')
 
@@ -96,6 +98,19 @@ class Lexer:
 
         self.add_token(TokenType.NUMBER)
 
+    def identifier(self):
+        # var name
+        while self.peek().isalnum() or self.peek() == "_":
+            self.advance()
+
+        # we get only the "var" part
+        text = self.source[self.start:self.current]
+
+        # we're on the lookout for reserved keywords like "var"
+        # if not found it's the name of a variable or a function
+        token_type = KEYWORDS.get(text, TokenType.IDENTIFIER)
+        self.add_token(token_type)
+
     def peek(self) -> str:
         """Peek at the next character without consuming it."""
         if self.is_at_end():
@@ -106,5 +121,7 @@ class Lexer:
         if self.current + 1 >= len(self.source):
             return "\0"
         return self.source[self.current + 1]
+
+
 
 
