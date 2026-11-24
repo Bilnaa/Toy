@@ -25,5 +25,7 @@ class Interpreter:
                         return left_value * right_value
                     case TokenType.SLASH:
                         return left_value / right_value
+                    case _:
+                        raise ValueError(f"Unknown operator: {operator}")
             case _:
                 return ValueError(f"Unexpected node: {expr}")
