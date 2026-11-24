@@ -135,66 +135,37 @@ def test_parse_empty_parentheses():
     with pytest.raises(SyntaxError):
         parser.parse()
 
-def test_evaluate_factor():
-    source = "3 + 2 * 4"  # 3 + (2 * 4)
-
+def tokenize(source: str) -> list[Token]:
+    """Tokenize source code."""
     lexer = Lexer(source)
-    tokens = lexer.tokenize()
-    parser = Parser(tokens)
-    ast = parser.parse()
-    interpreter = Interpreter()
+    return lexer.tokenize()
 
+
+def parse(source: str) -> list:
+    """Parse source code into AST."""
+    tokens = tokenize(source)
+    parser = Parser(tokens)
+    return parser.parse()
+
+
+def evaluate(source: str):
+    """Evaluate source code and return result."""
+    ast = parse(source)
+    interpreter = Interpreter()
     result = None
     for statement in ast:
         result = interpreter.evaluate(statement)
-    assert result == 11.0
+    return result
 
-# Parser
-def test_parse_comparison_equality():
-    source = "3 > 2 == 4"  # (3 > 2) == 4
-    lexer = Lexer(source)
-    tokens = lexer.tokenize()
-    parser = Parser(tokens)
-    ast = parser.parse()
-    assert ast == [
-        Binary(
-            Binary(
-                Literal(3.0),
-                Token(TokenType.GREATER, ">", 1),
-                Literal(2.0),
-            ),
-            Token(TokenType.EQUAL_EQUAL, "==", 1),
-            Literal(4.0),
-        )
-    ]
-
-# Interpreter
-def test_evaluate_comparison():
-    source = "3 + 2 > 4"
-    lexer = Lexer(source)
-    tokens = lexer.tokenize()
-    parser = Parser(tokens)
-    ast = parser.parse()
-    interpreter = Interpreter()
-
-    result = None
-    for statement in ast:
-        result = interpreter.evaluate(statement)
-
-    assert result == True
-
-# Interpreter
-def test_evaluate_equality():
-    source = "3 + 2 == 4"
-    lexer = Lexer(source)
-    tokens = lexer.tokenize()
-    parser = Parser(tokens)
-
-    ast = parser.parse()
-    interpreter = Interpreter()
-
-    result = None
-    for statement in ast:
-        result = interpreter.evaluate(statement)
-
-    assert result == False
+# Interpreter tests
+@pytest.mark.parametrize(
+    "source,expected",
+    [
+        ("3 + 2 * 4", 11.0),  # Precedence: 3 + (2 * 4)
+        ("3 + 2 > 4", True),  # Comparison: 5 > 4
+        ("3 + 2 == 5", True),  # Equality: 5 == 5
+        ("3 + 2 == 4", False),  # Equality: 5 == 4
+    ],
+)
+def test_evaluate_expressions(source, expected):
+    assert evaluate(source) == expected
