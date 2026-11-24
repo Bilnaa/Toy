@@ -21,7 +21,13 @@ class Parser:
     #############################
 
     def parse_expression(self) -> Expression:
-        return self.parse_term()
+        return self.parse_equality()
+
+    def parse_equality(self) -> Expression:
+        return self.binary_left(self.parse_comparison, [TokenType.BANG_EQUAL, TokenType.EQUAL_EQUAL])
+
+    def parse_comparison(self) -> Expression:
+        return self.binary_left(self.parse_term, [TokenType.GREATER, TokenType.GREATER_EQUAL, TokenType.LESS, TokenType.LESS_EQUAL])
 
     def parse_term(self) -> Expression:
         return self.binary_left(self.parse_factor, [TokenType.PLUS, TokenType.MINUS])

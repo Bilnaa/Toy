@@ -25,6 +25,18 @@ class Interpreter:
                         return left_value * right_value
                     case TokenType.SLASH:
                         return left_value / right_value
+                    case TokenType.GREATER:
+                        return left_value > right_value
+                    case TokenType.GREATER_EQUAL:
+                        return left_value >= right_value
+                    case TokenType.LESS:
+                        return left_value < right_value
+                    case TokenType.LESS_EQUAL:
+                        return left_value <= right_value
+                    case TokenType.EQUAL_EQUAL:
+                        return left_value == right_value
+                    case TokenType.BANG_EQUAL:
+                        return left_value != right_value
                     case _:
                         raise ValueError(f"Unknown operator: {operator}")
             case _:

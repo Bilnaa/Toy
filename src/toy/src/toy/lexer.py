@@ -33,6 +33,30 @@ class Lexer:
                 self.add_token(TokenType.LPAREN)
             case ")":
                 self.add_token(TokenType.RPAREN)
+            case ">":
+                if self.peek() == "=":
+                    self.advance()
+                    self.add_token(TokenType.GREATER_EQUAL)
+                else:
+                    self.add_token(TokenType.GREATER)
+            case "<":
+                if self.peek() == "=":
+                    self.advance()
+                    self.add_token(TokenType.LESS_EQUAL)
+                else:
+                    self.add_token(TokenType.LESS)
+            case "!":
+                if self.peek() == "=":
+                    self.advance()
+                    self.add_token(TokenType.BANG_EQUAL)
+                else:
+                    self.add_token(TokenType.BANG)
+            case "=":
+                if self.peek() == "=":
+                    self.advance()
+                    self.add_token(TokenType.EQUAL_EQUAL)
+                else:
+                    self.add_token(TokenType.EQUAL)
             case ";":
                 self.add_token(TokenType.SEMICOLON)
             case ",":

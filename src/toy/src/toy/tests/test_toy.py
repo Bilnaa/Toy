@@ -148,3 +148,53 @@ def test_evaluate_factor():
     for statement in ast:
         result = interpreter.evaluate(statement)
     assert result == 11.0
+
+# Parser
+def test_parse_comparison_equality():
+    source = "3 > 2 == 4"  # (3 > 2) == 4
+    lexer = Lexer(source)
+    tokens = lexer.tokenize()
+    parser = Parser(tokens)
+    ast = parser.parse()
+    assert ast == [
+        Binary(
+            Binary(
+                Literal(3.0),
+                Token(TokenType.GREATER, ">", 1),
+                Literal(2.0),
+            ),
+            Token(TokenType.EQUAL_EQUAL, "==", 1),
+            Literal(4.0),
+        )
+    ]
+
+# Interpreter
+def test_evaluate_comparison():
+    source = "3 + 2 > 4"
+    lexer = Lexer(source)
+    tokens = lexer.tokenize()
+    parser = Parser(tokens)
+    ast = parser.parse()
+    interpreter = Interpreter()
+
+    result = None
+    for statement in ast:
+        result = interpreter.evaluate(statement)
+
+    assert result == True
+
+# Interpreter
+def test_evaluate_equality():
+    source = "3 + 2 == 4"
+    lexer = Lexer(source)
+    tokens = lexer.tokenize()
+    parser = Parser(tokens)
+
+    ast = parser.parse()
+    interpreter = Interpreter()
+
+    result = None
+    for statement in ast:
+        result = interpreter.evaluate(statement)
+
+    assert result == False
