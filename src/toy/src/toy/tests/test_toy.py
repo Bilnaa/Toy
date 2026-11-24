@@ -58,11 +58,11 @@ def evaluate(source: str):
 @pytest.mark.parametrize(
     "source,expected",
     [
-        ("3 + 2 * 4", 11.0),  # Precedence: 3 + (2 * 4)
-        ("3 + 2 > 4", True),  # Comparison: 5 > 4
-        ("3 + 2 == 5", True),  # Equality: 5 == 5
-        ("3 + 2 == 4", False),  # Equality: 5 == 4
-        ("-2 + 3", 1),  # Unary: 1
+        ("3 + 2 * 4;", 11.0),  # Precedence: 3 + (2 * 4)
+        ("3 + 2 > 4;", True),  # Comparison: 5 > 4
+        ("3 + 2 == 5;", True),  # Equality: 5 == 5
+        ("3 + 2 == 4;", False),  # Equality: 5 == 4
+        ("-2 + 3;", 1),  # Unary: 1
     ],
 )
 def test_evaluate_expressions(source, expected):
