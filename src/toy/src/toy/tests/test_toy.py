@@ -1,6 +1,7 @@
 import pytest
 
 from toy.ast_nodes import *
+from toy.interpreter import Interpreter
 from toy.lexer import Lexer
 from toy.parser import Parser
 from toy.tokens import TokenType, Token
@@ -133,3 +134,17 @@ def test_parse_empty_parentheses():
 
     with pytest.raises(SyntaxError):
         parser.parse()
+
+def test_evaluate_factor():
+    source = "3 + 2 * 4"  # 3 + (2 * 4)
+
+    lexer = Lexer(source)
+    tokens = lexer.tokenize()
+    parser = Parser(tokens)
+    ast = parser.parse()
+    interpreter = Interpreter()
+
+    result = None
+    for statement in ast:
+        result = interpreter.evaluate(statement)
+    assert result == 11.0
