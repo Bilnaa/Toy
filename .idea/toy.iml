@@ -2,7 +2,7 @@
 <module external.system.id="pyproject.toml" type="PYTHON_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$/src/toy">
-      <sourceFolder url="file://$MODULE_DIR$/src/toy/src" />
+      <sourceFolder url="file://$MODULE_DIR$/src/toy/src" isTestSource="false" />
     </content>
     <orderEntry type="jdk" jdkName="~/dev/langage-design/.venv" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
