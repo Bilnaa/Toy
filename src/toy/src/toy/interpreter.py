@@ -1,16 +1,39 @@
 from typing import Any
 
-from toy.ast_nodes import Expression, Literal, Binary, Unary
+from toy.ast_nodes import Literal, Binary, Unary, ExpressionStatement, Statement, VarStatement
+from toy.environment import Environment
 from toy.tokens import TokenType
 
 
 class Interpreter:
-    def interpret(self,statements:list[Expression]):
-        for statement in statements:
-            self.evaluate(statement)
+    def __init__(self, environment=None):
+        self.environment = environment if environment is not None else Environment()
 
-    def evaluate(self, expr: Expression) -> Any:
+    def interpret(self, statements: list[Statement], start_index: int = 0):
+        for statement in statements[start_index:]:
+            self.execute(statement)
+
+    def execute(self, stmt: Statement) -> Any:
+        match stmt:
+            case ExpressionStatement(expression):
+                return self.evaluate(expression)
+            case VarStatement(name, initializer):
+                value = self.evaluate(initializer) if initializer is not None else None
+                self.environment.define(name.lexeme, value)
+                return value
+            case _:
+                raise ValueError(f"Unexpected statement: {stmt}")
+
+    def evaluate(self, expr: Any) -> Any:
         match expr:
+            case ExpressionStatement(expression):
+                return self.evaluate(expression)
+            case VarStatement(name, initializer):
+                value = self.evaluate(initializer) if initializer is not None else None
+                self.environment.define(name.lexeme, value)
+                return value
+            case Statement():
+                return self.execute(expr)
             case Literal(value):
                 return value
             case Binary(left, operator, right):
@@ -49,4 +72,4 @@ class Interpreter:
                     case _:
                         raise ValueError(f"Unknown operator: {operator}")
             case _:
-                return ValueError(f"Unexpected node: {expr}")
+                raise ValueError(f"Unexpected node: {expr}")

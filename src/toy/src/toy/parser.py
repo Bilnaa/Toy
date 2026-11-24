@@ -43,7 +43,9 @@ class Parser:
 
     def parse_expression_statement(self) -> Statement:
         expr = self.parse_expression()
-        self.consume(TokenType.SEMICOLON, "Expected a ';' after expression.")
+        # Allow a trailing expression without a semicolon (REPL style).
+        if not self.is_at_end():
+            self.consume(TokenType.SEMICOLON, "Expected a ';' after expression.")
         return ExpressionStatement(expr)
 
     #############################
