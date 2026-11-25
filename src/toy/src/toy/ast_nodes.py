@@ -51,3 +51,13 @@ class VarStatement(Statement):
 @dataclass
 class PrintStatement(Statement):
     expression: Expression
+
+@dataclass
+class IfStatement(Statement):
+    condition: Expression
+    then_branch: Statement
+    else_branch: Statement
+
+@dataclass
+class BlockStatement(Statement):
+    statements: list[Statement]

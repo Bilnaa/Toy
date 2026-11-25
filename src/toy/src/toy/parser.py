@@ -1,7 +1,7 @@
 from typing import Callable
 
 from toy.ast_nodes import Expression, Literal, Binary, Unary, Variable, Statement, VarStatement, ExpressionStatement, \
-    PrintStatement
+    PrintStatement, BlockStatement, IfStatement
 from toy.tokens import Token, TokenType
 
 
@@ -42,6 +42,10 @@ class Parser:
     def parse_statement(self) -> Statement:
         if self.match(TokenType.PRINT):
             return self.parse_print_statement()
+        if self.match(TokenType.IF):
+            return self.parse_if_statement()
+        if self.match(TokenType.LBRACE):
+            return self.parse_block_statement()
         return self.parse_expression_statement()
 
     def parse_expression_statement(self) -> Statement:
@@ -55,6 +59,31 @@ class Parser:
         expr = self.parse_expression()
         self.consume(TokenType.SEMICOLON, "Expected a ';' after expression.")
         return PrintStatement(expr)
+
+    def parse_if_statement(self) -> Statement:
+        self.consume(TokenType.LPAREN, "Expected '(' after expression.")
+        condition = self.parse_expression()
+        self.consume(TokenType.RPAREN, "Expected ')' after expression.")
+
+        then_branch = self.parse_statement()
+        else_branch = None
+
+        if self.match(TokenType.ELSE):
+            else_branch = self.parse_statement()
+
+        return IfStatement(condition, then_branch, else_branch)
+
+    def parse_block_statement(self) -> Statement:
+        statements = []
+        while not self.check(TokenType.RBRACE) and not self.is_at_end():
+            statements.append(self.parse_declaration())
+        self.consume(TokenType.RBRACE, "Expected '}' after expression.")
+        return BlockStatement(statements)
+
+
+
+
+
 
     #############################
     # Expression

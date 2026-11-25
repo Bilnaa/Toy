@@ -90,3 +90,37 @@ def test_parse_print_statement():
             )
         )
 ]
+
+def test_parse_if_statement():
+    ast = parse(
+        """if (1 == 2) {
+    print 3;
+   } else {
+    print 4;
+   }"""
+    )
+
+    assert ast == [
+        IfStatement(
+            condition=Binary(
+                Literal(1.0),
+                Token(TokenType.EQUAL_EQUAL, "==", 1),
+                Literal(2.0),
+            ),
+            then_branch=BlockStatement(
+                statements=[
+                    PrintStatement(
+                        Literal(3.0),
+                    )
+                ]
+            ),
+            else_branch=BlockStatement(
+                statements=[
+                    PrintStatement(
+                        Literal(4.0),
+                    )
+                ]
+            ),
+        )
+    ]
+

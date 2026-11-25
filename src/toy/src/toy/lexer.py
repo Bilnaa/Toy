@@ -33,6 +33,10 @@ class Lexer:
                 self.add_token(TokenType.LPAREN)
             case ")":
                 self.add_token(TokenType.RPAREN)
+            case '{':
+                self.add_token(TokenType.LBRACE)
+            case '}':
+                self.add_token(TokenType.RBRACE)
             case ">":
                 if self.peek() == "=":
                     self.advance()
