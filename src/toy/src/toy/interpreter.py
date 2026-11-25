@@ -31,7 +31,6 @@ class Interpreter:
                     return self.execute(then_branch)
                 if else_branch is not None:
                     return self.execute(else_branch)
-                return None
             case BlockStatement(statements):
                 return self.execute_block(statements, Environment(self.environment))
             case _:
