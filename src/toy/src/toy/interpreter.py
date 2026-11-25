@@ -1,6 +1,7 @@
 from typing import Any
 
-from toy.ast_nodes import Literal, Binary, Unary, Variable, ExpressionStatement, Statement, VarStatement, PrintStatement
+from toy.ast_nodes import Literal, Binary, Unary, Variable, ExpressionStatement, Statement, VarStatement, PrintStatement, \
+    IfStatement, BlockStatement
 from toy.environment import Environment
 from toy.tokens import TokenType
 
@@ -25,8 +26,31 @@ class Interpreter:
                 value = self.evaluate(expr)
                 print(value)
                 return value
+            case IfStatement(condition, then_branch, else_branch):
+                if self.is_truthy(self.evaluate(condition)):
+                    return self.execute(then_branch)
+                if else_branch is not None:
+                    return self.execute(else_branch)
+                return None
+            case BlockStatement(statements):
+                return self.execute_block(statements, Environment(self.environment))
             case _:
                 raise ValueError(f"Unexpected statement: {stmt}")
+
+    def execute_block(self, statements: list[Statement], environment: Environment) -> Any:
+        previous = self.environment
+        self.environment = environment
+        try:
+            for statement in statements:
+                self.execute(statement)
+        finally:
+            self.environment = previous
+        return None
+
+    @staticmethod
+    def is_truthy(value: Any) -> bool:
+        # Only `None` and `False` are falsy (0 is truthy).
+        return value is not None and value is not False
 
     def evaluate(self, expr: Any) -> Any:
         match expr:
