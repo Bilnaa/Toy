@@ -76,3 +76,17 @@ def test_parse_var_declaration():
             Literal(1.0),
         )
     ]
+
+
+def test_parse_print_statement():
+    ast = parse("print 1 + 2;")
+    assert ast == [
+        PrintStatement(
+            Binary(
+                Literal(1.0),
+                Token(TokenType.PLUS, "+"
+                      , 1),
+                Literal(2.0),
+            )
+        )
+]

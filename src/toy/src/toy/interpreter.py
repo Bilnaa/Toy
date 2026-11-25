@@ -1,6 +1,6 @@
 from typing import Any
 
-from toy.ast_nodes import Literal, Binary, Unary, ExpressionStatement, Statement, VarStatement
+from toy.ast_nodes import Literal, Binary, Unary, Variable, ExpressionStatement, Statement, VarStatement, PrintStatement
 from toy.environment import Environment
 from toy.tokens import TokenType
 
@@ -21,6 +21,10 @@ class Interpreter:
                 value = self.evaluate(initializer) if initializer is not None else None
                 self.environment.define(name.lexeme, value)
                 return value
+            case PrintStatement(expr):
+                value = self.evaluate(expr)
+                print(value)
+                return value
             case _:
                 raise ValueError(f"Unexpected statement: {stmt}")
 
@@ -36,6 +40,8 @@ class Interpreter:
                 return self.execute(expr)
             case Literal(value):
                 return value
+            case Variable(name):
+                return self.environment.get(name.lexeme)
             case Binary(left, operator, right):
                 left_value = self.evaluate(left)
                 right_value = self.evaluate(right)

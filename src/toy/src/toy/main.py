@@ -3,6 +3,7 @@ import sys
 from toy.interpreter import Interpreter
 from toy.lexer import Lexer
 from toy.parser import Parser
+from toy.ast_nodes import Statement
 
 interpreter = Interpreter()
 
@@ -13,11 +14,9 @@ def run(source: str):
         tokens = lexer.tokenize()
 
         parser = Parser(tokens)
-        ast = parser.parse()
+        ast: list[Statement] = parser.parse()
 
-        for expr in ast:
-            value = interpreter.evaluate(expr)
-            print(value)
+        interpreter.interpret(ast)
     except (SyntaxError, RuntimeError) as e:
         print(f"Error: {e}")
 

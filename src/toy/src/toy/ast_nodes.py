@@ -25,6 +25,11 @@ class Unary(Expression):
     # A unary is just an operator prefixed by an operator on the right
     operator: Token
     right: Expression
+
+@dataclass
+class Variable(Expression):
+    # A variable reference, e.g. `a`
+    name: Token
 #####################
 # Statements
 #####################
@@ -42,3 +47,7 @@ class ExpressionStatement(Statement):
 class VarStatement(Statement):
     name: Token
     initializer: Expression | None
+
+@dataclass
+class PrintStatement(Statement):
+    expression: Expression

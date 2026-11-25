@@ -10,3 +10,10 @@ class Environment:
             raise RuntimeError(f"Variable '{name}' is already defined.")
         self.values[name] = value
         return value
+
+    def get(self, name):
+        if name in self.values:
+            return self.values[name]
+        if self.enclosing is not None:
+            return self.enclosing.get(name)
+        raise RuntimeError(f"Undefined variable '{name}'.")

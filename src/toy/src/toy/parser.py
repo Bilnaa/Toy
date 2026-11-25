@@ -1,6 +1,7 @@
 from typing import Callable
 
-from toy.ast_nodes import Expression, Literal, Binary, Unary, Statement, VarStatement, ExpressionStatement
+from toy.ast_nodes import Expression, Literal, Binary, Unary, Variable, Statement, VarStatement, ExpressionStatement, \
+    PrintStatement
 from toy.tokens import Token, TokenType
 
 
@@ -9,8 +10,8 @@ class Parser:
         self.tokens = tokens
         self.current = 0
 
-    def parse(self) -> list[Expression]:
-        statements = []
+    def parse(self) -> list[Statement]:
+        statements: list[Statement] = []
         while not self.is_at_end():
             statements.append(self.parse_declaration())
 
@@ -39,6 +40,8 @@ class Parser:
         return VarStatement(name, initializer)
 
     def parse_statement(self) -> Statement:
+        if self.match(TokenType.PRINT):
+            return self.parse_print_statement()
         return self.parse_expression_statement()
 
     def parse_expression_statement(self) -> Statement:
@@ -47,6 +50,11 @@ class Parser:
         if not self.is_at_end():
             self.consume(TokenType.SEMICOLON, "Expected a ';' after expression.")
         return ExpressionStatement(expr)
+
+    def parse_print_statement(self) -> Statement:
+        expr = self.parse_expression()
+        self.consume(TokenType.SEMICOLON, "Expected a ';' after expression.")
+        return PrintStatement(expr)
 
     #############################
     # Expression
@@ -78,6 +86,9 @@ class Parser:
         """primary is something that we can't decompose no more like: 3, 'bob'"""
         if self.match(TokenType.NUMBER):
             return Literal(float(self.previous().lexeme))
+
+        if self.match(TokenType.IDENTIFIER):
+            return Variable(self.previous())
 
         if self.match(TokenType.LPAREN):
             expr = self.parse_expression()
