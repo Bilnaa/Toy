@@ -7,7 +7,9 @@ authors = [
     { name = "Bilnaa", email = "noufele.mehdi@hotmail.fr" }
 ]
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "textual>=8.2.8",
+]
 
 [project.scripts]
 toy = "toy:main"
