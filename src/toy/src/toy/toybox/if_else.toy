@@ -1,0 +1,16 @@
+var a = 5;
+
+if (a > 3) {
+  print 1;
+} else {
+  print 0;
+}
+
+if (a == 2) {
+  print 2;
+} else {
+  var b = a + 10;
+  print b;
+}
+
+if (a != 5) print 100;
